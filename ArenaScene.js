@@ -87,7 +87,7 @@ class ArenaScene extends Phaser.Scene {
     }
     update(){
         gameState.inputTimer++;
-        if(gameState.inputTimer>30&&gameState.locked == false){
+        if(gameState.inputTimer>30 && gameState.locked == false){
             if(gameState.keys.A.isDown){
                 gameState.inputTimer = 0;
                 if(gameState.leftDoorStatus == false){

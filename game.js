@@ -40,7 +40,7 @@ let gameState = {
     ventDoorStatus: false,
     cameraMoniterStatus: false,
     camPosition: 1,
-    power: 3,
+    power: 100,
     usage: 1,
     reset :function(){
         gameState.locked = false;  
@@ -50,7 +50,7 @@ let gameState = {
         gameState.cameraMoniterStatus = false;
         gameState.camPosition = 1;
         gameState.usage = 1;
-        gameState.power = 3;
+        gameState.power = 100;
         gameState.ennard.position = 7;
         gameState.ennard.cooldown = 3000;
     },
@@ -144,6 +144,14 @@ let gameState = {
                         gameState.ennard.position = 52;
                     }else if (gameState.ennard.position == 52){
                         if(gameState.ventDoorStatus == false){
+                            scene.time.addEvent({
+                                delay: 400,
+                                callback: ()=>{
+                                    gameState.locked = true;
+                                },  
+                                startAt: 0,
+                                timeScale: 1
+                            });
                             gameState.ennard.position = 0; 
                             gameState.ennard.cooldown = 800;
                         }else{
@@ -158,6 +166,14 @@ let gameState = {
                         gameState.ennard.position = 22;
                     }else if (gameState.ennard.position==22){
                         if(gameState.rightDoorStatus == false){
+                            scene.time.addEvent({
+                                delay: 400,
+                                callback: ()=>{
+                                    gameState.locked = true;
+                                },  
+                                startAt: 0,
+                                timeScale: 1
+                            });
                             gameState.ennard.position = 0; 
                             gameState.ennard.cooldown = 800;
                         }else{
@@ -176,6 +192,14 @@ let gameState = {
                         if(gameState.leftDoorStatus == false){
                             gameState.ennard.position = 0; 
                             gameState.ennard.cooldown = 800;
+                            scene.time.addEvent({
+                                delay: 400,
+                                callback: ()=>{
+                                    gameState.locked = true;
+                                },  
+                                startAt: 0,
+                                timeScale: 1
+                            });
                         }else{
                             var rand = Math.ceil(Math.random()*2);
                             if(rand == 1){
