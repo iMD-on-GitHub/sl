@@ -46,7 +46,7 @@ class ArenaScene extends Phaser.Scene {
         
         var powerText = this.add.text(100, 50, `Power ${Math.floor(gameState.power)}%`, {
             fill: '#FFFFFF', 
-            fontSize: `10px`,
+            fontSize: `20px`,
             fontFamily: 'LiberationSansNarrow',
             strokeThickness: 1,
         }).setInteractive().setDepth(3);
