@@ -17,7 +17,7 @@ const config = {
         }
     },
     //subclass scenes 
-    scene:[MenuScene,ArenaScene,CameraScene],
+    scene:[MenuScene,ArenaScene,CameraScene,UIScene],
     //phasers scale system to fit into the brower
     scale: {
         zoom: 1,
@@ -32,7 +32,7 @@ const game = new Phaser.Game(config);
 //create a block-scoped object that stores variables that can be accessed in any scene
 let gameState = {
     thingsToSave:{
-        night: 1
+        night: 5
     },
     locked: false,
     leftDoorStatus: false,
@@ -42,6 +42,7 @@ let gameState = {
     camPosition: 1,
     power: 100,
     usage: 1,
+    hour: 12,
     reset :function(){
         gameState.locked = false;  
         gameState.leftDoorStatus = false;
@@ -52,7 +53,8 @@ let gameState = {
         gameState.usage = 1;
         gameState.power = 100;
         gameState.ennard.position = 7;
-        gameState.ennard.cooldown = 3000;
+        gameState.ennard.cooldown = 10000;
+        gameState.hour = 12;
     },
     update: function(scene){
         gameState.static.alpha = 1;
@@ -111,106 +113,205 @@ let gameState = {
     
     ennard:{
         position: 7,
-        cooldown: 3000,
+        cooldown: 10000,
         moveFunction: null,
         movement: function(scene){
             gameState.ennard.moveFunction = scene.time.addEvent({
                 delay: gameState.ennard.cooldown,
                 callback: ()=>{
-                    gameState.ennard.cooldown=3000;
-                    if(gameState.ennard.position == 7){
-                        var rand = Math.ceil(Math.random()*3);
-                        if(rand == 1){
-                            gameState.ennard.position = 4;
-                            gameState.ennard.cooldown=1500;
-                        }else if(rand == 2){
-                            gameState.ennard.position = 6;
-                        }else{
-                            gameState.ennard.position = 5;
-                        }
-                    }else if (gameState.ennard.position == 6){
-                        var rand = Math.ceil(Math.random()*4);
-                        if(rand == 1){
-                            gameState.ennard.position = 3;
-                            gameState.ennard.cooldown=1500;
-                        }else if(rand == 2){
-                            gameState.ennard.position = 1;
-                        }else if(rand == 3){
-                            gameState.ennard.position = 4;
-                        }else{
-                            gameState.ennard.position = 5;
-                        }
-                    }else if (gameState.ennard.position == 5){
-                        gameState.ennard.position = 52;
-                    }else if (gameState.ennard.position == 52){
-                        if(gameState.ventDoorStatus == false){
-                            scene.time.addEvent({
-                                delay: 400,
-                                callback: ()=>{
-                                    gameState.locked = true;
-                                },  
-                                startAt: 0,
-                                timeScale: 1
-                            });
-                            gameState.ennard.position = 0; 
-                            gameState.ennard.cooldown = 800;
-                        }else{
-                            gameState.ennard.position = 6;
-                        }
-                    }
-                    
-                    else if (gameState.ennard.position == 4){
-                        gameState.ennard.position = 2;
-                    }
-                    else if (gameState.ennard.position==2){
-                        gameState.ennard.position = 22;
-                    }else if (gameState.ennard.position==22){
-                        if(gameState.rightDoorStatus == false){
-                            scene.time.addEvent({
-                                delay: 400,
-                                callback: ()=>{
-                                    gameState.locked = true;
-                                },  
-                                startAt: 0,
-                                timeScale: 1
-                            });
-                            gameState.ennard.position = 0; 
-                            gameState.ennard.cooldown = 800;
-                        }else{
-                            gameState.ennard.position = 7;
-                            gameState.ennard.cooldown = 2000;
-                        }
-                    }
-                    
-                    else if (gameState.ennard.position==3){
-                        gameState.ennard.position = 1;
-                    }
-                    
-                    else if (gameState.ennard.position==1){
-                        gameState.ennard.position = 12;
-                    }else if (gameState.ennard.position==12){
-                        if(gameState.leftDoorStatus == false){
-                            gameState.ennard.position = 0; 
-                            gameState.ennard.cooldown = 800;
-                            scene.time.addEvent({
-                                delay: 400,
-                                callback: ()=>{
-                                    gameState.locked = true;
-                                },  
-                                startAt: 0,
-                                timeScale: 1
-                            });
-                        }else{
+                    if(gameState.thingsToSave.night == 1){
+                        gameState.ennard.cooldown=Math.ceil(Math.random()*15000+20000);
+                        if(gameState.ennard.position == 7){
                             var rand = Math.ceil(Math.random()*2);
                             if(rand == 1){
+                                gameState.ennard.position = 4;
+                                gameState.ennard.cooldown=Math.ceil(Math.random()*15000+10000);
+                            }else if(rand == 2){
                                 gameState.ennard.position = 6;
-                            }else{
+                            }
+                        }else if (gameState.ennard.position == 6){
+                            var rand = Math.ceil(Math.random()*3);
+                            if(rand == 1){
+                                gameState.ennard.position = 3;
+                                gameState.ennard.cooldown=15000;
+                            }else if(rand == 2){
+                                gameState.ennard.position = 1;
+                            }else if(rand == 3){
                                 gameState.ennard.position = 7;
                             }
+                        }else if (gameState.ennard.position == 5){
+                            gameState.ennard.position = 52;
+                            gameState.ennard.cooldown=Math.ceil(Math.random()*10000+10000);
+                        }else if (gameState.ennard.position == 52){
+                            if(gameState.ventDoorStatus == false){
+                                scene.time.addEvent({
+                                    delay: 400,
+                                    callback: ()=>{
+                                        gameState.locked = true;
+                                    },  
+                                    startAt: 0,
+                                    timeScale: 1
+                                });
+                                gameState.ennard.position = 0; 
+                                gameState.ennard.cooldown = 800;
+                            }else{
+                                gameState.ennard.position = 6;
+                            }
                         }
-                    }else if (gameState.ennard.position==0){
-                        gameState.ennard.jumpscare(gameState.scene);
+
+                        else if (gameState.ennard.position == 4){
+                            gameState.ennard.position = 2;
+                        }
+                        else if (gameState.ennard.position==2){
+                            gameState.ennard.position = 22;
+                            gameState.ennard.cooldown=Math.ceil(Math.random()*10000+10000);
+                        }else if (gameState.ennard.position==22){
+                            if(gameState.rightDoorStatus == false){
+                                scene.time.addEvent({
+                                    delay: 400,
+                                    callback: ()=>{
+                                        gameState.locked = true;
+                                    },  
+                                    startAt: 0,
+                                    timeScale: 1
+                                });
+                                gameState.ennard.position = 0; 
+                                gameState.ennard.cooldown = 800;
+                            }else{
+                                gameState.ennard.position = 7;
+                                gameState.ennard.cooldown = 10000;
+                            }
+                        }
+
+                        else if (gameState.ennard.position==3){
+                            gameState.ennard.position = 1;
+                        }
+
+                        else if (gameState.ennard.position==1){
+                            gameState.ennard.position = 12;
+                            gameState.ennard.cooldown=Math.ceil(Math.random()*10000+10000);
+                        }else if (gameState.ennard.position==12){
+                            if(gameState.leftDoorStatus == false){
+                                gameState.ennard.position = 0; 
+                                gameState.ennard.cooldown = 800;
+                                scene.time.addEvent({
+                                    delay: 400,
+                                    callback: ()=>{
+                                        gameState.locked = true;
+                                    },  
+                                    startAt: 0,
+                                    timeScale: 1
+                                });
+                            }else{
+                                var rand = Math.ceil(Math.random()*2);
+                                if(rand == 1){
+                                    gameState.ennard.position = 6;
+                                }else{
+                                    gameState.ennard.position = 7;
+                                }
+                            }
+                        }else if (gameState.ennard.position==0){
+                            gameState.ennard.jumpscare(gameState.scene);
+                        }
                     }
+                    
+                    else if(gameState.thingsToSave.night == 5){
+                        gameState.ennard.cooldown=3000;
+                        if(gameState.ennard.position == 7){
+                            var rand = Math.ceil(Math.random()*3);
+                            if(rand == 1){
+                                gameState.ennard.position = 4;
+                                gameState.ennard.cooldown=1500;
+                            }else if(rand == 2){
+                                gameState.ennard.position = 6;
+                            }else{
+                                gameState.ennard.position = 5;
+                            }
+                        }else if (gameState.ennard.position == 6){
+                            var rand = Math.ceil(Math.random()*4);
+                            if(rand == 1){
+                                gameState.ennard.position = 3;
+                                gameState.ennard.cooldown=1500;
+                            }else if(rand == 2){
+                                gameState.ennard.position = 1;
+                            }else if(rand == 3){
+                                gameState.ennard.position = 4;
+                            }else{
+                                gameState.ennard.position = 5;
+                            }
+                        }else if (gameState.ennard.position == 5){
+                            gameState.ennard.position = 52;
+                        }else if (gameState.ennard.position == 52){
+                            if(gameState.ventDoorStatus == false){
+                                scene.time.addEvent({
+                                    delay: 400,
+                                    callback: ()=>{
+                                        gameState.locked = true;
+                                    },  
+                                    startAt: 0,
+                                    timeScale: 1
+                                });
+                                gameState.ennard.position = 0; 
+                                gameState.ennard.cooldown = 800;
+                            }else{
+                                gameState.ennard.position = 6;
+                            }
+                        }
+
+                        else if (gameState.ennard.position == 4){
+                            gameState.ennard.position = 2;
+                        }
+                        else if (gameState.ennard.position==2){
+                            gameState.ennard.position = 22;
+                        }else if (gameState.ennard.position==22){
+                            if(gameState.rightDoorStatus == false){
+                                scene.time.addEvent({
+                                    delay: 400,
+                                    callback: ()=>{
+                                        gameState.locked = true;
+                                    },  
+                                    startAt: 0,
+                                    timeScale: 1
+                                });
+                                gameState.ennard.position = 0; 
+                                gameState.ennard.cooldown = 800;
+                            }else{
+                                gameState.ennard.position = 7;
+                                gameState.ennard.cooldown = 2000;
+                            }
+                        }
+
+                        else if (gameState.ennard.position==3){
+                            gameState.ennard.position = 1;
+                        }
+
+                        else if (gameState.ennard.position==1){
+                            gameState.ennard.position = 12;
+                        }else if (gameState.ennard.position==12){
+                            if(gameState.leftDoorStatus == false){
+                                gameState.ennard.position = 0; 
+                                gameState.ennard.cooldown = 800;
+                                scene.time.addEvent({
+                                    delay: 400,
+                                    callback: ()=>{
+                                        gameState.locked = true;
+                                    },  
+                                    startAt: 0,
+                                    timeScale: 1
+                                });
+                            }else{
+                                var rand = Math.ceil(Math.random()*2);
+                                if(rand == 1){
+                                    gameState.ennard.position = 6;
+                                }else{
+                                    gameState.ennard.position = 7;
+                                }
+                            }
+                        }else if (gameState.ennard.position==0){
+                            gameState.ennard.jumpscare(gameState.scene);
+                        }
+                    }
+                    
                     gameState.update(gameState.cameraScene);
                     gameState.ennard.movement(scene);
                 },  

@@ -46,6 +46,22 @@ class CameraScene extends Phaser.Scene {
             gameState.camPosition = 7;
             gameState.update(gameState.cameraScene);
         });
+        
+        var cameraButton = this.add.sprite(400,650,'cameraButton').setOrigin(0,0).setDepth(3).setInteractive();
+        cameraButton.on('pointerover', function(pointer){
+            if(gameState.inputTimer>30 && gameState.locked == false){
+                gameState.cameraFlipSound.play();
+                gameState.inputTimer = 0;
+                if(gameState.cameraMoniterStatus == true){
+                    gameState.cameraMoniter.anims.play('cameraMoniterClose','true');
+                    gameState.scene.scene.pause('CameraScene');
+                    gameState.scene.scene.bringToTop('ArenaScene');
+                    gameState.scene.scene.bringToTop('UIScene');
+                    gameState.cameraMoniterStatus = false;
+                    gameState.usage -= 1;
+                }
+            }
+        });
     }
     update(){
         

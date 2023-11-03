@@ -34,6 +34,9 @@ class MenuScene extends Phaser.Scene {
         this.load.image('CAM07','images/CAM07.png');
         this.load.image('CAM07ennard','images/CAM07ennard.png');
         
+        this.load.image('cameraButton','images/cameraButton.png');
+        this.load.image('usageBar','images/usageBar.png');
+        
         this.load.spritesheet('ennardJs','images/ennardJs.png',{frameWidth: 1200,frameHeight:700});
         
         
@@ -44,20 +47,30 @@ class MenuScene extends Phaser.Scene {
         this.load.spritesheet('CAM05Button','images/CAM05Button.png',{frameWidth: 90,frameHeight:39});
         this.load.spritesheet('CAM06Button','images/CAM06Button.png',{frameWidth: 90,frameHeight:39});
         this.load.spritesheet('CAM07Button','images/CAM07Button.png',{frameWidth: 90,frameHeight:39});
+        
+        
+        
+        this.load.audio('ambience', 'audio/ambience.mp3');
+        this.load.audio('officeDoor', 'audio/officeDoor.mp3');
+        this.load.audio('cameraFlip', 'audio/cameraFlip.mp3');
         /*
         this.load.audio('click', 'audio/click.mp3');*/
     }
     create() {
         var scene = this;
+        this.scene.stop('UIScene');
         //set current scene to variable
         
     //audio
         //config for keeping sound loop
         gameState.loopSound = {
             loop: true,
-            volume: .5
+            volume: 1.5
         }
         gameState.reset();
+        
+        
+        
         
         this.anims.create({
             key: 'mainMenuStaticAction',
