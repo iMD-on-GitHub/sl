@@ -40,7 +40,7 @@ let gameState = {
     ventDoorStatus: false,
     cameraMoniterStatus: false,
     camPosition: 1,
-    power: 100,
+    power: 3,
     usage: 1,
     reset :function(){
         gameState.locked = false;  
@@ -50,7 +50,9 @@ let gameState = {
         gameState.cameraMoniterStatus = false;
         gameState.camPosition = 1;
         gameState.usage = 1;
-        gameState.power = 100;
+        gameState.power = 3;
+        gameState.ennard.position = 7;
+        gameState.ennard.cooldown = 3000;
     },
     update: function(scene){
         gameState.static.alpha = 1;

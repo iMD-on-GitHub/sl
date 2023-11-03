@@ -53,14 +53,14 @@ class ArenaScene extends Phaser.Scene {
         var powerChecker = this.time.addEvent({
             delay: 1,
             callback: ()=>{
-                gameState.power -= 0.0065*gameState.usage;
+                gameState.power -= 0.002*gameState.usage;
                 powerText.setText(`Power ${Math.floor(gameState.power)}%`);
                 if(gameState.power <= 0){
                     powerChecker.destroy();
                     powerText.destroy();
                     gameState.locked = true;
                     if(gameState.rightDoorStatus == true){
-                        gameState.rightDoor.anims.play('rightDoorClose','true');
+                        gameState.rightDoor.anims.play('rightDoorOpen','true');
                         gameState.rightDoorStatus = true;
                     }if(gameState.leftDoorStatus == true){
                         gameState.leftDoor.anims.play('leftDoorOpen','true');
@@ -74,6 +74,7 @@ class ArenaScene extends Phaser.Scene {
                         gameState.scene.scene.bringToTop('ArenaScene');
                         gameState.cameraMoniterStatus = false;
                     }
+                    officeBg.anims.stop();
                     officeBg.setFrame(5);
                 }
             },  
