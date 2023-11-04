@@ -329,6 +329,8 @@ let gameState = {
             }
             var ennard = scene.add.sprite(0,0,'ennardJs').setOrigin(0,0).setDepth(4);
             ennard.anims.play('ennardJsAction','true');
+            var ennardJs = scene.sound.add('ennardJsSound');
+            ennardJs.play();
             scene.time.addEvent({
                 delay: 900,
                 callback: ()=>{

@@ -53,6 +53,7 @@ class MenuScene extends Phaser.Scene {
         this.load.audio('ambience', 'audio/ambience.mp3');
         this.load.audio('officeDoor', 'audio/officeDoor.mp3');
         this.load.audio('cameraFlip', 'audio/cameraFlip.mp3');
+        this.load.audio('ennardJsSound', 'audio/ennardJs.mp3');
         /*
         this.load.audio('click', 'audio/click.mp3');*/
     }
