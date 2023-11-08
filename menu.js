@@ -13,6 +13,8 @@ class MenuScene extends Phaser.Scene {
         this.load.spritesheet('ventDoor','images/ventDoor.png',{frameWidth: 1200,frameHeight:700});
         this.load.spritesheet('cameraMoniter','images/cameraMoniter.png',{frameWidth: 1200,frameHeight:700});
         this.load.spritesheet('cameraStatic','images/cameraStatic.png',{frameWidth: 1200,frameHeight:700});
+        this.load.spritesheet('officeScrapBaby','images/officeScrapBaby.png',{frameWidth: 1200,frameHeight:700});
+        this.load.spritesheet('scrapBabyJumpscare','images/scrapBabyJumpscare.png',{frameWidth: 1200,frameHeight:700});
         this.load.image('mainMenuBackground','images/mainMenuBackground.png');
         this.load.image('menuTextLine','images/menuTextLine.png');
         this.load.image('cameraBackground','images/cameraBackground.png');
@@ -20,6 +22,8 @@ class MenuScene extends Phaser.Scene {
         this.load.image('CAM01','images/CAM01.png');
         this.load.image('CAM01ennard','images/CAM01ennard.png');
         this.load.image('CAM01ennard2','images/CAM01ennard2.png');
+        this.load.image('CAM01scrapBaby','images/CAM01scrapBaby.png');
+        this.load.image('CAM01scrapBaby2','images/CAM01scrapBaby2.png');
         this.load.image('CAM02','images/CAM02.png');
         this.load.image('CAM02ennard','images/CAM02ennard.png');
         this.load.image('CAM02ennard2','images/CAM02ennard2.png');
@@ -54,6 +58,16 @@ class MenuScene extends Phaser.Scene {
         this.load.audio('officeDoor', 'audio/officeDoor.mp3');
         this.load.audio('cameraFlip', 'audio/cameraFlip.mp3');
         this.load.audio('ennardJsSound', 'audio/ennardJs.mp3');
+        this.load.audio('scrapBabyJumpscare', 'audio/scrapBabyJumpscare.mp3');
+        this.load.audio('videoStatic', 'audio/videoStatic.mp3');
+        this.load.audio('powerDownSound', 'audio/powerDownSound.mp3');
+        this.load.audio('menuMusic', 'audio/menuMusic.mp3');
+        this.load.audio('nightOnePhoneCall', 'audio/nightOnePhoneCall.mp3');
+        this.load.audio('nightTwoPhoneCall', 'audio/nightTwoPhoneCall.mp3');
+        this.load.audio('nightThreePhoneCall', 'audio/nightThreePhoneCall.mp3');
+        this.load.audio('nightFourPhoneCall', 'audio/nightFourPhoneCall.mp3');
+        this.load.audio('nightFivePhoneCall', 'audio/nightFivePhoneCall.mp3');
+        this.load.audio('nightSixPhoneCall', 'audio/nightSixPhoneCall.mp3');
         /*
         this.load.audio('click', 'audio/click.mp3');*/
     }
@@ -66,11 +80,15 @@ class MenuScene extends Phaser.Scene {
         //config for keeping sound loop
         gameState.loopSound = {
             loop: true,
-            volume: 1.5
+            volume: 1
+        }
+        gameState.lowLoopSound = {
+            loop: true,
+            volume: 0.7
         }
         gameState.reset();
         
-        
+        gameState.loadSave();
         
         
         this.anims.create({
@@ -151,13 +169,19 @@ class MenuScene extends Phaser.Scene {
             frames:this.anims.generateFrameNames('ennardJs',{start: 0,end: 16})
         });
         
-        
+        this.anims.create({
+            key: 'scrapBabyJumpscareAction',
+            frameRate: 15,
+            frames:this.anims.generateFrameNames('scrapBabyJumpscare',{start: 0,end: 11})
+        });
         
         
         
         var menuBg = this.add.image(-600,0,'mainMenuBackground').setOrigin(0,0);
         menuBg.scale = 1200/menuBg.width;
         
+        var menuMusic = this.sound.add('menuMusic');
+        menuMusic.play(gameState.lowLoopSound);
         
         var menuStatic = this.add.sprite(0,0,'mainMenuStatic').setOrigin(0,0);
         menuStatic.anims.play('mainMenuStaticAction','true');
@@ -176,6 +200,8 @@ class MenuScene extends Phaser.Scene {
             strokeThickness: .5,
         }).setInteractive();
         newGameText.on('pointerdown', function(pointer){
+            menuMusic.stop();
+            gameState.thingsToSave.night = 1;
             scene.scene.start('ArenaScene');
         });
         var menuTextLine1 = this.add.image(0,430,'menuTextLine').setOrigin(0,0);
@@ -194,6 +220,10 @@ class MenuScene extends Phaser.Scene {
             fontFamily: 'LiberationSansNarrow',
             strokeThickness: .5,
         }).setInteractive();
+        continueText.on('pointerdown', function(pointer){
+            menuMusic.stop();
+            scene.scene.start('ArenaScene');
+        });
         var menuTextLine2 = this.add.image(0,519,'menuTextLine').setOrigin(0,0);
         menuTextLine2.visible = false;
         continueText.on('pointerover', function(pointer){

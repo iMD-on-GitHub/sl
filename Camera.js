@@ -53,6 +53,7 @@ class CameraScene extends Phaser.Scene {
                 gameState.cameraFlipSound.play();
                 gameState.inputTimer = 0;
                 if(gameState.cameraMoniterStatus == true){
+                    gameState.cameraStatic.stop();
                     gameState.cameraMoniter.anims.play('cameraMoniterClose','true');
                     gameState.scene.scene.pause('CameraScene');
                     gameState.scene.scene.bringToTop('ArenaScene');

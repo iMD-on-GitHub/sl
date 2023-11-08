@@ -46,7 +46,7 @@ class UIScene extends Phaser.Scene {
             timeScale: 1,
             repeat:-1
         });
-        gameState.hourText = this.add.text(1130, 10, `${gameState.hour} PM`, {
+        gameState.hourText = this.add.text(1130, 10, `${gameState.hour} AM`, {
             fill: '#FFFFFF', 
             fontSize: `20px`,
             fontFamily: 'LiberationSansNarrow',
@@ -104,26 +104,108 @@ class ArenaScene extends Phaser.Scene {
         gameState.keys = this.input.keyboard.addKeys('W,S,A,D,R,SPACE,SHIFT,ONE,TWO,THREE,FOUR,FIVE,SIX,SEVEN,EIGHT,ESC,RIGHT,LEFT');
         
         
-        var ambience = this.sound.add('ambience');
-        ambience.play(gameState.loopSound,true);
+        gameState.ambience = this.sound.add('ambience');
+        gameState.ambience.play(gameState.loopSound,true);
         
         
         gameState.officeDoorSound = this.sound.add('officeDoor');
         gameState.cameraFlipSound = this.sound.add('cameraFlip');
         
+        gameState.cameraStatic = gameState.scene.sound.add('videoStatic');
         
-        this.time.addEvent({
+        gameState.call = 0;
+        
+        if(gameState.thingsToSave.night == 1){
+            gameState.ennard.aiLevel = 0;
+            gameState.ennard.position = 111;
+            this.time.addEvent({
+                delay: 5000,
+                callback: ()=>{
+                    gameState.call = this.sound.add('nightOnePhoneCall');
+                    gameState.call.play();
+                },  
+                startAt: 0,
+                timeScale: 1
+            });
+        }else if(gameState.thingsToSave.night == 2){
+            gameState.ennard.aiLevel = 5;
+            this.time.addEvent({
+                delay: 5000,
+                callback: ()=>{
+                    gameState.call = this.sound.add('nightTwoPhoneCall');
+                    gameState.call.play();
+                },  
+                startAt: 0,
+                timeScale: 1
+            });
+        }else if(gameState.thingsToSave.night == 3){
+            gameState.ennard.aiLevel = 10;
+            this.time.addEvent({
+                delay: 5000,
+                callback: ()=>{
+                    gameState.call = this.sound.add('nightThreePhoneCall');
+                    gameState.call.play();
+                },  
+                startAt: 0,
+                timeScale: 1
+            });
+        }else if(gameState.thingsToSave.night == 4){
+            gameState.ennard.aiLevel = 14;
+            this.time.addEvent({
+                delay: 5000,
+                callback: ()=>{
+                    gameState.call = this.sound.add('nightFourPhoneCall');
+                    gameState.call.play();
+                },  
+                startAt: 0,
+                timeScale: 1
+            });
+        }else if(gameState.thingsToSave.night == 5){
+            gameState.ennard.aiLevel = 20;
+            this.time.addEvent({
+                delay: 5000,
+                callback: ()=>{
+                    gameState.call = this.sound.add('nightFivePhoneCall');
+                    gameState.call.play();
+                },  
+                startAt: 0,
+                timeScale: 1
+            });
+        }
+        else if(gameState.thingsToSave.night == 6){
+            gameState.ennard.aiLevel = 0;
+            this.time.addEvent({
+                delay: 5000,
+                callback: ()=>{
+                    gameState.call = this.sound.add('nightSixPhoneCall');
+                    gameState.call.play();
+                },  
+                startAt: 0,
+                timeScale: 1
+            });
+        }
+        
+        var timeChecker = this.time.addEvent({
             delay: 60000,
             callback: ()=>{
                 if(gameState.hour == 12){
                     gameState.hour = 1;
-                    gameState.hourText.setText(`${gameState.hour} AM`);
+                    if(gameState.power > 0){
+                        gameState.hourText.setText(`${gameState.hour} AM`);
+                    }
                 }else{
                     gameState.hour++;
-                    gameState.hourText.setText(`${gameState.hour} AM`);
+                    if(gameState.power > 0){
+                        gameState.hourText.setText(`${gameState.hour} AM`);
+                    }
                 }
                 if(gameState.hour == 6){
-                    gameState.thingsToSave.night++;
+                    if(gameState.thingsToSave.night <6){
+                        gameState.thingsToSave.night++;
+                    }
+                    gameState.save();
+                    gameState.ambience.stop();
+                    gameState.call.stop();
                     gameState.scene.scene.stop('ArenaScene');
                     gameState.scene.scene.stop('CameraScene');
                     gameState.scene.scene.start('MenuScene');
@@ -135,6 +217,8 @@ class ArenaScene extends Phaser.Scene {
         });
        
         this.add.image(0,0,'blackBackground').setOrigin(0,0).setScale(10).setDepth(0);
+        gameState.scrapBabySprite = this.add.sprite(0,0,'officeScrapBaby').setOrigin(0,0);
+        gameState.scrapBabySprite.setFrame(0);
         var officeBg = this.add.sprite(0,0,'officeBackground').setOrigin(0,0).setDepth(3);
         officeBg.anims.play('officeBackgroundAction','true');
         
@@ -160,10 +244,15 @@ class ArenaScene extends Phaser.Scene {
         var powerChecker = this.time.addEvent({
             delay: 1,
             callback: ()=>{
-                gameState.power -= 0.0022*gameState.usage;
+                gameState.power -= 0.0025*gameState.usage;
                 gameState.powerText.setText(`POWER\n${Math.floor(gameState.power)}%`);
                 if(gameState.power <= 0){
+                    var powerDown = this.sound.add('powerDownSound');
+                    powerDown.play();
+                    gameState.call.stop();
+                    gameState.ambience.stop();
                     powerChecker.destroy();
+                    cameraButton.destroy();
                     gameState.powerText.destroy();
                     this.scene.stop('UIScene');
                     gameState.locked = true;
@@ -201,6 +290,7 @@ class ArenaScene extends Phaser.Scene {
                     gameState.scene.time.addEvent({
                         delay: 300,
                         callback: ()=>{
+                            gameState.cameraStatic.play(gameState.lowLoopSound);
                             gameState.cameraMoniterStatus = true;
                             gameState.usage += 1;
                             gameState.scene.scene.resume('CameraScene');
@@ -214,8 +304,13 @@ class ArenaScene extends Phaser.Scene {
                 }
             }
         });
+        if(gameState.thingsToSave.night != 6){
+            gameState.ennard.movement(this);
+        }else{
+            gameState.scrapBaby.movement(this);
+            gameState.ennard.position = 111;
+        }
         
-        gameState.ennard.movement(this);
     }
     update(){
         gameState.inputTimer++;
@@ -267,6 +362,7 @@ class ArenaScene extends Phaser.Scene {
                     this.time.addEvent({
                         delay: 300,
                         callback: ()=>{
+                            gameState.cameraStatic.play(gameState.lowLoopSound);
                             gameState.cameraMoniterStatus = true;
                             gameState.usage += 1;
                             gameState.scene.scene.resume('CameraScene');
@@ -278,6 +374,7 @@ class ArenaScene extends Phaser.Scene {
                         timeScale: 1
                     });
                 }else{
+                    gameState.cameraStatic.stop();
                     gameState.cameraMoniter.anims.play('cameraMoniterClose','true');
                     gameState.scene.scene.pause('CameraScene');
                     gameState.scene.scene.bringToTop('ArenaScene');
