@@ -244,7 +244,7 @@ class ArenaScene extends Phaser.Scene {
         var powerChecker = this.time.addEvent({
             delay: 1,
             callback: ()=>{
-                gameState.power -= 0.0025*gameState.usage;
+                gameState.power -= 0.0023*gameState.usage;
                 gameState.powerText.setText(`POWER\n${Math.floor(gameState.power)}%`);
                 if(gameState.power <= 0){
                     var powerDown = this.sound.add('powerDownSound');
